@@ -42,8 +42,7 @@
 					<el-col :xs="3" :sm="3" :md="3" :lg="3" class="userinfo">
 						<el-dropdown trigger="hover">
 							<span class="el-dropdown-link userinfo-inner" 
-							style="margin: auto auto auto -300px"> 欢迎你，牟洪宇 同学&emsp;
-							<a style="text-decoration:underline;color: blue;" >退出</a></span>
+							style="margin: auto auto auto -300px"> 欢迎你，{{sysUserName}} {{sysUserAvatar}}&emsp;</span>
 							<el-dropdown-menu slot="dropdown">
 								<router-link class='inlineBlock' to="/page1" style="text-decoration:none; color: black;">
 									<el-dropdown-item>
@@ -53,6 +52,7 @@
 								<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
+						<el-button type="success" @click="logout"  size="small">退出</el-button>
 					</el-col>
 				</el-col>
 				<div class="grid-content bg-purple-light">
@@ -77,7 +77,7 @@
         },
         data() {
             return {
-                sysName: '高校教室预约系统',
+                sysName: '',
                 collapsed: false,
                 sysUserName: '',
 				sysUserAvatar: '',
@@ -235,8 +235,13 @@
             var user = sessionStorage.getItem('user');
             if (user) {
                 user = JSON.parse(user);
-                this.sysUserName = user.name || '';
-                this.sysUserAvatar = user.avatar || '';
+				this.sysUserName = user.username || '';
+				if(user.identity==1){
+				this.sysUserAvatar = "管理员";}
+				if(user.identity==2){
+				this.sysUserAvatar = "老师";}
+				if(user.identity==3){
+                this.sysUserAvatar = "同学";}
             }
             var _this = this;
 

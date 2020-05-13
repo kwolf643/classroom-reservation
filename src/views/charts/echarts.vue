@@ -2,19 +2,7 @@
     <section class="chart-container">
         <el-row>
             <el-col :span="12">
-                <div id="chartColumn" style="width:100%; height:400px;"></div>
-            </el-col>
-            <el-col :span="12">
-                <div id="chartBar" style="width:100%; height:400px;"></div>
-            </el-col>
-            <el-col :span="12">
-                <div id="chartLine" style="width:100%; height:400px;"></div>
-            </el-col>
-            <el-col :span="12">
                 <div id="chartPie" style="width:100%; height:400px;"></div>
-            </el-col>
-            <el-col :span="24">
-                <a href="http://echarts.baidu.com/examples.html" target="_blank" style="float: right;">more>></a>
             </el-col>
         </el-row>
     </section>
@@ -26,154 +14,23 @@
     export default {
         data() {
             return {
-                chartColumn: null,
-                chartBar: null,
-                chartLine: null,
-                chartPie: null
+                chartPie: null,
+                data: [
+                    {value: 335, name: '锁定已占'},
+                    {value: 310, name: '锁定空闲'},
+                    {value: 234, name: '开放已占'},
+                    {value: 135, name: '开放空闲'}
+                ],
+
             }
         },
 
         methods: {
-            drawColumnChart() {
-                this.chartColumn = echarts.init(document.getElementById('chartColumn'));
-                this.chartColumn.setOption({
-                    title: {text: 'Column Chart'},
-                    tooltip: {},
-                    xAxis: {
-                        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'bar',
-                        data: [5, 20, 36, 10, 10, 20]
-                    }],
-                    label: {
-                        normal: {
-                            show: true,
-                            position: 'top'
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
-                            color: function (params) {
-                                var colorList = ['#4f81bd', '#c0504d', '#9bbb59', '#604a7b', '#948a54', '#e46c0b'];
-                                return colorList[params.dataIndex];
-                            }
-                        }
-                    }
-                });
-            },
-            drawBarChart() {
-                this.chartBar = echarts.init(document.getElementById('chartBar'));
-                this.chartBar.setOption({
-                    title: {
-                        text: 'Bar Chart'
-                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                            type: 'shadow'
-                        }
-                    },
-                    legend: {
-                        data: ['2011年', '2012年']
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: {
-                        type: 'value',
-                        boundaryGap: [0, 0.01]
-                    },
-                    yAxis: {
-                        type: 'category',
-                        data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
-                    },
-                    label: {
-                        normal: {
-                            show: true,
-                            position: 'right'
-                        }
-                    },
-                    series: [
-                        {
-                            name: '2011年',
-                            type: 'bar',
-                            data: [18203, 23489, 29034, 104970, 131744, 630230]
-                        },
-                        {
-                            name: '2012年',
-                            type: 'bar',
-                            data: [19325, 23438, 31000, 121594, 134141, 681807]
-                        }
-                    ]
-                });
-            },
-            drawLineChart() {
-                this.chartLine = echarts.init(document.getElementById('chartLine'));
-                this.chartLine.setOption({
-                    title: {
-                        text: 'Line Chart'
-                    },
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        data: ['邮件营销', '联盟广告', '搜索引擎']
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: {
-                        type: 'category',
-                        boundaryGap: false,
-                        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-                    },
-                    label: {
-                        normal: {
-                            show: true,
-                            position: 'top'
-                        }
-                    },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    series: [
-                        {
-                            name: '邮件营销',
-                            type: 'line',
-                            stack: '总量',
-                            data: [120, 132, 101, 134, 90, 230, 210]
-                        },
-                        {
-                            name: '联盟广告',
-                            type: 'line',
-                            stack: '总量',
-                            data: [220, 182, 191, 234, 290, 330, 310]
-                        },
-                        {
-                            name: '搜索引擎',
-                            type: 'line',
-                            stack: '总量',
-                            data: [820, 932, 901, 934, 1290, 1330, 1320]
-                        }
-                    ]
-                });
-            },
             drawPieChart() {
                 this.chartPie = echarts.init(document.getElementById('chartPie'));
                 this.chartPie.setOption({
                     title: {
-                        text: 'Pie Chart',
-                        subtext: '纯属虚构',
+                        text: '教室资源图',
                         x: 'center'
                     },
                     tooltip: {
@@ -183,7 +40,7 @@
                     legend: {
                         orient: 'vertical',
                         left: 'left',
-                        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                        data:['锁定已占', '锁定空闲', '开放已占', '开放空闲']
                     },
                     label: {
                         normal: {
@@ -211,18 +68,12 @@
                             type: 'pie',
                             radius: '55%',
                             center: ['50%', '60%'],
-                            data: [
-                                {value: 335, name: '直接访问'},
-                                {value: 310, name: '邮件营销'},
-                                {value: 234, name: '联盟广告'},
-                                {value: 135, name: '视频广告'},
-                                {value: 1548, name: '搜索引擎'}
-                            ],
+                            data: this.data,
                             itemStyle: {
                                 emphasis: {
                                     shadowBlur: 10,
                                     shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    shadowColor: 'rgba(1, 1, 1, 1.5)'
                                 }
                             }
                         }
@@ -230,9 +81,6 @@
                 });
             },
             drawCharts() {
-                this.drawColumnChart()
-                this.drawBarChart()
-                this.drawLineChart()
                 this.drawPieChart()
             },
         },
@@ -241,9 +89,6 @@
             const that = this;
             that.drawCharts();
             window.onresize = function() {
-                that.chartColumn.resize();
-                that.chartBar.resize();
-                that.chartLine.resize();
                 that.chartPie.resize();
             };
         },

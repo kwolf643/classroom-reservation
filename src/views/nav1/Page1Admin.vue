@@ -43,7 +43,6 @@
                     <el-button @click.stop="on_refresh" size="small">
                         <i class="fa fa-refresh"></i>
                     </el-button>
-                    <el-button type="primary" @click="handleAdd" icon="plus" size="small">申请</el-button>
                 </div>
             </div>
             <div class="panel-body">
@@ -58,42 +57,12 @@
                             <p v-if="scope.row.openStatus1=='开放预约'"  style="color:green;">开放预约</p>
                         </template> 
                     </el-table-column>
-                    <el-table-column prop="addr"         label="教室地址"> </el-table-column>
                     <el-table-column prop="date"         label="预约日期" sortable> </el-table-column>
-                    <el-table-column prop="time1"        label="1-2节">
+                    <el-table-column prop="addr"         label="教室地址"> </el-table-column>
+                    <el-table-column label="操作" width="150">
                         <template scope="scope" >
-                            <el-button size="small" type="primary" icon="plus" v-if="scope.row.time1=='空闲'"  @click="handleAdd(scope.$index, scope.row,1)">空闲</el-button>
-                            <p v-if="scope.row.time1=='已占'"  style="color:red;">已占</p>
-                        </template> 
-                    </el-table-column>
-                    <el-table-column prop="time2"        label="3-4节">    
-                        <template scope="scope" >
-                            <el-button size="small" type="primary" icon="plus" v-if="scope.row.time2=='空闲'"  @click="handleAdd(scope.$index, scope.row,2)">空闲</el-button>
-                            <p v-if="scope.row.time2=='已占'"  style="color:red;">已占</p>
-                        </template> 
-                    </el-table-column>
-                    <el-table-column prop="time3"        label="5-6节">    
-                        <template scope="scope" >
-                            <el-button size="small" type="primary" icon="plus" v-if="scope.row.time3=='空闲'"  @click="handleAdd(scope.$index, scope.row,3)">空闲</el-button>
-                            <p v-if="scope.row.time3=='已占'"  style="color:red;">已占</p>
-                        </template> </el-table-column> 
-                    <el-table-column prop="time4"        label="7-8节">    
-                        <template scope="scope" >
-                            <el-button size="small" type="primary" icon="plus" v-if="scope.row.time4=='空闲'"  @click="handleAdd(scope.$index, scope.row,4)">空闲</el-button>
-                            <p v-if="scope.row.time4=='已占'"  style="color:red;">已占</p>
-                        </template> 
-                    </el-table-column>
-                    <el-table-column prop="time5"        label="9-10节">   
-                        <template scope="scope" >
-                            <el-button size="small" type="primary" icon="plus" v-if="scope.row.time5=='空闲'"  @click="handleAdd(scope.$index, scope.row,5)">空闲</el-button>
-                            <p v-if="scope.row.time5=='已占'"  style="color:red;">已占</p>
-                        </template> 
-                    </el-table-column>
-                    <el-table-column prop="time6"        label="11-12节">  
-                        <template scope="scope" >
-                            <el-button size="small" type="primary" icon="plus" v-if="scope.row.time6=='空闲'"  @click="handleAdd(scope.$index, scope.row,6)">空闲</el-button>
-                            <p v-if="scope.row.time6=='已占'"  style="color:red;">已占</p>
-                        </template> 
+                            <el-button type="success" size="small" @click="handleEdit(scope.$index, scope.row)">管理</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
 
@@ -105,63 +74,51 @@
             </div>
         </div>
 
-        <!--预约界面-->
-        <el-dialog title="预约申请" v-model="addFormVisible" :close-on-click-modal="false" size="small">
-            <el-form ref="addForm" :model="addForm" label-width="80px" :rules="addFormRules">
-                <!--<el-row :gutter="2">-->
-                <!--<el-col :xs="8" :sm="6" :md="5" :lg="5">-->
-                <el-form-item label="教室名称" prop="cRId" style="width: 450px;">
-                    <el-input v-model="addForm.cRId" auto-complete="off"></el-input>
+        <!--资源管理界面-->
+        <el-dialog title="资源管理" v-model="editFormVisible" :close-on-click-modal="false">
+            <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+                <el-form-item label="教室名称" prop="classroomId" style="width: 292px;">
+                    <el-input v-model="editForm.classroomId" auto-complete="off" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="预约日期" prop="rDate" style="width: 450px;">
-                    <el-date-picker v-model="addForm.rDate" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1">
+                <el-form-item label="起始日期" prop="firstDate">
+                    <el-date-picker
+                            v-model="editForm.firstDate"
+                            type="date"
+                            placeholder="选择日期"
+                            align="right"
+                            :picker-options="pickerOptions1">
                     </el-date-picker>
-                 </el-form-item>
-                 <!--</el-col>-->
-                 <!--</el-row>-->
-                 <el-form-item label="预约时间段" prop="rTime" style="width: 450px;">
-                    <el-select v-model="addForm.rTime" placeholder="选择时间段">
-                        <el-option label="1-2节" value=1></el-option>
-                        <el-option label="3-4节" value=2></el-option>
-                        <el-option label="5-6节" value=3></el-option>
-                        <el-option label="7-8节" value=4></el-option>
-                        <el-option label="9-10节" value=5></el-option>
-                        <el-option label="11-12节" value=6></el-option>
+                </el-form-item>
+                <el-form-item label="结束日期" prop="secondtDate">
+                    <el-date-picker
+                            v-model="editForm.secondtDate"
+                            type="date"
+                            placeholder="选择日期"
+                            align="right"
+                            :picker-options="pickerOptions1">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="操作" prop="openStatus">
+                    <el-select v-model="editForm.openStatus" placeholder="选择时间段">
+                        <el-option label="锁定" value=0></el-option>
+                        <el-option label="开放" value=1></el-option>
                      </el-select>
-                </el-form-item>
-                <el-form-item label="手机号码" prop="rPhone" style="width: 450px;">
-                    <el-input v-model="addForm.rPhone" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="预约类型" prop="rType" style="width: 450px;">
-                    <el-select v-model="addForm.rType"  placeholder="请选择类型">
-                        <el-option label="会议" value="会议"></el-option>
-                        <el-option label="社团活动" value="社团活动"></el-option>
-                        <el-option label="班级预约" value="班级预约"></el-option>
-                        <el-option label="课外辅导" value="课外辅导"></el-option>
-                        <el-option label="其他" value="其他"></el-option>
-                     </el-select>
-                </el-form-item>
-                <el-form-item label="备注" prop="remarks" style="width: 450px;">
-                    <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入内容"
-                            v-model="addForm.remarks">
-                    </el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click.native="addFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
+                <el-button @click.native="editFormVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
             </div>
         </el-dialog>
+
+
     </section>
 </template>
 
 <script>
     import util from '../../common/js/util'
     //import NProgress from 'nprogress'
-    import { getMaintainListPage, addMaintain } from '../../api/api';
+    import { getMaintainListPage, updateClassroom } from '../../api/api';
 
     export default {
         data() {
@@ -188,27 +145,27 @@
                     time5:'',
                     time6:''
                 },
-                panelTitle: '查询列表',
+                panelTitle: '教室列表',
                 pickerOptions1: {
                     shortcuts: [{
                         text: '明天',
                         onClick(picker) {
                             const date = new Date();
-                            date.setTime(date.getTime() + 3600 * 1000 * 24);
+                            date.setTime(date.getTime() );
                             picker.$emit('pick', date);
                         }
                     }, {
                         text: '后天',
                         onClick(picker) {
                             const date = new Date();
-                            date.setTime(date.getTime() + 3600 * 1000 * 24*2);
+                            date.setTime(date.getTime() + 3600 * 1000 * 24);
                             picker.$emit('pick', date);
                         }
                     }, {
                         text: '一周后',
                         onClick(picker) {
                             const date = new Date();
-                            date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+                            date.setTime(date.getTime() + 3600 * 1000 * 24 * 6);
                             picker.$emit('pick', date);
                         }
                     }],
@@ -243,38 +200,25 @@
                     type: undefined,
                     sort: '+id'
                 },
-
-                addFormVisible: false,//预约界面是否显示
-                addLoading: false,
-                addFormRules: {
-                    cRId: [
-                        { required: true, message: '请输入教室名称', trigger: 'blur' }
-                    ],
-                    rDate: [
+                editFormVisible: false,//管理界面是否显示
+                editLoading: false,
+                editFormRules: {
+                    firstDate: [
                         { required: true, type: 'date',message: '请选择日期', trigger: 'blur' }
                     ],
-                    rTime: [
-                        { required: true, message: '请选择时间段', trigger: 'blur' }
+                    secondtDate: [
+                        { required: true, type: 'date',message: '请选择日期', trigger: 'blur' }
                     ],
-                    rType: [
+                    openStatus: [
                         { required: true, message: '请选择类型', trigger: 'blur' }
-                    ],
-                    rPhone: [
-                        { required: true, message: '请输入手机号码', trigger: 'blur' },
-                        { type: 'string', min:11,max:11,pattern: '^[0-9]*$', message: '只能11位输入数字', trigger: 'blur' }
-                    ],
-                    remarks: [
-                        { required: true, message: '请输入备注', trigger: 'blur' }
                     ]
                 },
-                //预约界面数据
-                addForm: {
-                    cRId:'',
-                    rDate:'',
-                    rTime:"",
-                    rType:'',
-                    rPhone:'',
-                    remarks:''
+                //管理界面数据
+                editForm: {
+                    classroomId:'',
+                    openStatus:'',
+                    firstDate:'',
+                    secondtDate:''
                 }
 
             }
@@ -297,7 +241,7 @@
             on_refresh(){
                 this.getMaintains();
             },
-            //获取查询列表
+            //获取教室列表
             getMaintains() {
                 this.listLoading = true;
                 //NProgress.start();
@@ -326,28 +270,25 @@
                     //NProgress.done();
                 });
             },
-           
-            //显示预约界面
-            handleAdd: function (index, row,time) {
-                this.addFormVisible = true;
-                this.addForm.cRId = row.classroomId;
-                var date=new Date(row.date);
-                this.addForm.rDate= date;
-                this.addForm.rTime = time;
-                
+            handleEdit: function (index, row) {
+                this.editFormVisible = true;
+                this.editForm = Object.assign({}, row);
             },
-            //预约
-            addSubmit: function () {
-                this.$refs.addForm.validate((valid) => {
+              //管理操作
+            editSubmit: function () {
+                this.$refs.editForm.validate((valid) => {
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.addLoading = true;
+                            this.editLoading = true;
                             //NProgress.start();
-                            var para = { crid: this.addForm.cRId,rDate: this.addForm.rDate,rTime: this.addForm.rTime,
-                                         rType:this.addForm.rType,rPhone: this.addForm.rPhone,remarks: this.addForm.remarks };
+                           var para = { classroomId:this.editForm.classroomId,
+                                        openStatus: this.editForm.openStatus,
+                                        firstDate: this.editForm.firstDate,
+                                        secondtDate: this.editForm.secondtDate
+                                     };
                             console.log(para);
-                            addMaintain(para).then((res) => {
-                                this.addLoading = false;
+                            updateClassroom(para).then((res) => {
+                                this.editLoading  = false;
                                 //NProgress.done();
                                 if (res.data.code !== 200) {
                                     this.$message({
@@ -359,8 +300,8 @@
                                         message: res.data.msg,
                                         type: 'success'
                                     });
-                                this.$refs['addForm'].resetFields();
-                                this.addFormVisible = false;
+                                this.$refs['editForm'].resetFields();
+                                this.editFormVisible = false;
                                 this.getMaintains();
                                 }
                             });

@@ -31,7 +31,6 @@
                     <el-button @click.stop="on_refresh" size="small">
                         <i class="fa fa-refresh"></i>
                     </el-button>
-                    <el-button type="primary" @click="handleAdd" icon="plus" size="small">反馈</el-button>
                 </div>
             </div>
             <div class="panel-body">
@@ -40,18 +39,21 @@
                     <el-table-column type="index" width="60">
                     </el-table-column>
                     <el-table-column prop="fDate"  label="反馈日期" sortable> </el-table-column>
+                    <el-table-column prop="username"         label="反馈人"> </el-table-column>
+                    <el-table-column prop="identity"         label="反馈人身份"> </el-table-column>
+                    <el-table-column prop="topic"         label="反馈主题"> </el-table-column>
+                    <el-table-column prop="content"         label="反馈内容"> </el-table-column>
+                    <el-table-column prop="fPhone"         label="联系方式"> </el-table-column>
                     <el-table-column prop="fStatus"   label="反馈状态" sortable>
                         <template scope="scope" >
                             <p v-if="scope.row.fStatus==0"  style="color:blue;">待查看</p>
                             <p v-if="scope.row.fStatus==1"  style="color:green;">已阅</p>
                         </template> 
                     </el-table-column>
-                    <el-table-column prop="topic"         label="反馈主题"> </el-table-column>
-                    <el-table-column prop="content"         label="反馈内容"> </el-table-column>
-                    <el-table-column prop="fPhone"         label="联系方式"> </el-table-column>
                     <el-table-column label="操作" width="150">
                         <template scope="scope" >
-                            <el-button v-if="scope.row.fStatus !=1" type="danger" size="small" @click="handleDel(scope.$index, scope.row)">撤回</el-button>
+                            <el-button v-if="scope.row.fStatus ==0" type="success" size="small" @click="handleRead(scope.$index, scope.row)">已阅</el-button>
+                            <el-button v-if="scope.row.fStatus ==1" type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -63,36 +65,13 @@
                 </el-col>
             </div>
         </div>
-
-        <!--反馈界面-->
-        <el-dialog title="新增反馈" v-model="addFormVisible" :close-on-click-modal="false" size="small">
-            <el-form ref="addForm" :model="addForm" label-width="80px" :rules="addFormRules">
-                <!--<el-row :gutter="2">-->
-                <!--<el-col :xs="8" :sm="6" :md="5" :lg="5">-->
-                <el-form-item label="反馈主题" prop="topic" style="width: 450px;">
-                    <el-input v-model="addForm.topic" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="联系方式" prop="fPhone" style="width: 450px;">
-                    <el-input v-model="addForm.fPhone" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="反馈内容" prop="content" style="width: 450px;">
-                    <el-input v-model="addForm.content" auto-complete="off"></el-input>
-                </el-form-item>
-                 <!--</el-col>-->
-                 <!--</el-row>-->
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click.native="addFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
-            </div>
-        </el-dialog>
     </section>
 </template>
 
 <script>
     import util from '../../common/js/util'
     //import NProgress from 'nprogress'
-    import { getFeedbackListPage, addFeedback,deleteFeedback } from '../../api/api';
+    import { getFeedbackListPage, changeFeedback,deleteFeedback } from '../../api/api';
 
     export default {
         data() {
@@ -113,7 +92,7 @@
                     fPhone:'',
                     fDate:''
                 },
-                panelTitle: '我的反馈',
+                panelTitle: '反馈处理',
                 pickerOptions1: {
                     shortcuts: [{
                         text: '昨天',
@@ -157,29 +136,7 @@
                     title: undefined,
                     type: undefined,
                     sort: '+id'
-                },
-
-                addFormVisible: false,//新增界面是否显示
-                addLoading: false,
-                addFormRules: {
-                    topic: [
-                        { required: true, message: '请输入反馈主题', trigger: 'blur' }
-                    ],
-                    fPhone: [
-                        { required: true, message: '请输入手机号码', trigger: 'blur' },
-                        { type: 'string', min:11,max:11,pattern: '^[0-9]*$', message: '只能11位输入数字', trigger: 'blur' }
-                    ],
-                    content: [
-                        { required: true, message: '请输入反馈内容', trigger: 'blur' }
-                    ]
-                },
-                //反馈界面数据
-                addForm: {
-                    content:'',
-                    topic:'',
-                    fPhone:''
                 }
-
             }
         },
         methods: {
@@ -217,54 +174,38 @@
                     //NProgress.done();
                 });
             },
-           
-            //显示新增界面
-            handleAdd: function () {
-                this.addFormVisible = true;
-                this.addForm = {
-                    content:'',
-                    topic:'',
-                    fPhone:''
-                };
-            },
-            //新增反馈
-            addSubmit: function () {
-                this.$refs.addForm.validate((valid) => {
-                    if (valid) {
-                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                            this.addLoading = true;
-                            //NProgress.start();
-                            var para = { 
-                                content: this.addForm.content,
-                                topic: this.addForm.topic,
-                                fPhone: this.addForm.fPhone
-                            };
-                            console.log(para);
-                            addFeedback(para).then((res) => {
-                                this.addLoading = false;
-                                //NProgress.done();
-                                if (res.data.code !== 200) {
-                                    this.$message({
-                                        message: res.data.msg,
-                                        type: 'error'
-                                     });
-                                } else {
-                                    this.$message({
-                                        message: res.data.msg,
-                                        type: 'success'
-                                    });
-                                this.$refs['addForm'].resetFields();
-                                this.addFormVisible = false;
-                                this.getFeedback();
-                                }
-                            });
-                        });
-                    }
+             //已阅
+            handleRead: function (index, row) {
+                this.$confirm('确认已知晓反馈内容?', '提示', {
+                    type: 'warning'
+                }).then(() => {
+                    this.listLoading = true;
+                    //NProgress.start();
+                    let para = {feedbackId: row.feedbackId};
+                    console.log(para);
+                    changeFeedback(para).then((res) => {
+                        this.listLoading = false;
+                        //NProgress.done();
+                        if (res.data.code !== 200) {
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'error'
+                             });
+                        } else {
+                                this.$message({
+                                    message: res.data.msg,
+                                    type: 'success'
+                                })
+                        }
+                        this.getFeedback();
+                    });
+                }).catch(() => {
+
                 });
             },
-            //撤回
+            //删除
             handleDel: function (index, row) {
-                this.$confirm('确认撤回反馈吗?', '提示', {
+                this.$confirm('确认删除反馈吗?', '提示', {
                     type: 'warning'
                 }).then(() => {
                     this.listLoading = true;
