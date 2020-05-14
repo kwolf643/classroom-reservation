@@ -29,7 +29,7 @@
                     </el-col>
                     <el-col :xs="24" :sm="24" :md="24" :lg="12" style="margin-left: 12px;">
                         <el-form-item>
-                            <el-button type="primary" v-on:click="getMaintains" icon="search">查询</el-button>
+                            <el-button type="primary" v-on:click="getClassroom" icon="search">查询</el-button>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -161,7 +161,7 @@
 <script>
     import util from '../../common/js/util'
     //import NProgress from 'nprogress'
-    import { getMaintainListPage, addMaintain } from '../../api/api';
+    import { getClassroomListPage, addReserve } from '../../api/api';
 
     export default {
         data() {
@@ -287,18 +287,18 @@
             //操作分页
             handleSizeChange(val) {
                 this.listQuery.pageSize = val;
-                this.getMaintains();
+                this.getClassroom();
             },
             handleCurrentChange(val) {
                 this.listQuery.curPage = val;
-                this.getMaintains();
+                this.getClassroom();
             },
             //刷新
             on_refresh(){
-                this.getMaintains();
+                this.getClassroom();
             },
             //获取查询列表
-            getMaintains() {
+            getClassroom() {
                 this.listLoading = true;
                 //NProgress.start();
                  var para;
@@ -319,7 +319,7 @@
                     openStatus:this.filters.openStatus
                 };
                 console.log(para);
-                getMaintainListPage(para).then((res) => {
+                getClassroomListPage(para).then((res) => {
                     this.total = res.data.total;
                     this.maintains = res.data.data;
                     this.listLoading = false;
@@ -346,7 +346,7 @@
                             var para = { crid: this.addForm.cRId,rDate: this.addForm.rDate,rTime: this.addForm.rTime,
                                          rType:this.addForm.rType,rPhone: this.addForm.rPhone,remarks: this.addForm.remarks };
                             console.log(para);
-                            addMaintain(para).then((res) => {
+                            addReserve(para).then((res) => {
                                 this.addLoading = false;
                                 //NProgress.done();
                                 if (res.data.code !== 200) {
@@ -361,7 +361,7 @@
                                     });
                                 this.$refs['addForm'].resetFields();
                                 this.addFormVisible = false;
-                                this.getMaintains();
+                                this.getClassroom();
                                 }
                             });
                         });
@@ -373,7 +373,7 @@
             }
         },
         mounted() {
-          this.getMaintains();
+          this.getClassroom();
         }
     }
 

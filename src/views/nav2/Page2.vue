@@ -362,6 +362,7 @@
                 this.editForm = Object.assign({}, row);
                 var date=new Date(row.rDate);
                 this.editForm.rDate = date;
+                this.editForm.rTime1=row.rTime;
             },
               //编辑
             editSubmit: function () {
@@ -372,7 +373,7 @@
                             //NProgress.start();
                            var para = { reservationId:this.editForm.reservationId,crid: this.editForm.cRId,rDate: this.editForm.rDate,
                                         rTime: this.editForm.rTime,rType:this.editForm.rType,rPhone: this.editForm.rPhone,
-                                        remarks: this.editForm.remarks };
+                                        remarks: this.editForm.remarks,rTime1: this.editForm.rTime1 };
                             console.log(para);
                             updateReservation(para).then((res) => {
                                 this.editLoading  = false;

@@ -4,7 +4,7 @@
 			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
 				<!--导航菜单-->
 				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" unique-opened router v-if="!collapsed">
-					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
+					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden | item.identity==identity">
 						<el-submenu :index="index+''" v-if="!item.leaf">
 							<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>
 							<el-menu-item class="menu-list" v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">{{child.name}}</el-menu-item>
@@ -44,9 +44,9 @@
 							<span class="el-dropdown-link userinfo-inner" 
 							style="margin: auto auto auto -300px"> 欢迎你，{{sysUserName}} {{sysUserAvatar}}&emsp;</span>
 							<el-dropdown-menu slot="dropdown">
-								<router-link class='inlineBlock' to="/page1" style="text-decoration:none; color: black;">
+								<router-link class='inlineBlock' to="/page4" style="text-decoration:none; color: black;">
 									<el-dropdown-item>
-										首页
+										个人信息
 									</el-dropdown-item>
 								</router-link>
 								<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
@@ -69,8 +69,6 @@
 
 <script>
     import Screenfull from '../components/Screenfull';
-    import { getMaintainListPage, removeMaintain, batchRemoveMaintain } from '../api/api';
-
     export default {
         components: {
             Screenfull
@@ -78,7 +76,8 @@
         data() {
             return {
                 sysName: '',
-                collapsed: false,
+				collapsed: false,
+				identity:0,
                 sysUserName: '',
 				sysUserAvatar: '',
                 form: {
@@ -140,122 +139,21 @@
             },
             showMenu(i, status){
                 this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-' + i)[0].style.display = status ? 'block' : 'none';
-            },
-            //获取维护项列表
-            getMaintains() {
-                let para = {
-                    curPage: this.listQuery.curPage,
-                    pageSize: this.listQuery.pageSize,
-                    strOrder: 'asc'
-                };
-                this.listLoading = true;
-                //NProgress.start();
-                getMaintainListPage(para).then((res) => {
-                    this.total = res.data.total;
-                    this.maintains = res.data.maintains;
-                    this.listLoading = false;
-                    //NProgress.done();
-                });
-            },
-            handleCurrentChange(val) {
-                this.listQuery.curPage = val;
-                this.getMaintains();
-            },
-            //删除
-            handleDel: function (index, row) {
-                this.$confirm('确认删除该记录吗?', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.listLoading = true;
-                    //NProgress.start();
-                    let para = {strMaintainId: row.strMaintainId};
-                    removeMaintain(para).then((res) => {
-                        this.listLoading = false;
-                        //NProgress.done();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        this.getMaintains();
-                    });
-                }).catch(() => {
-
-                });
-            },
-            //延迟
-            handleDelay: function (index, row) {
-                //
-            },
-			//确认
-            handleConfirm: function (index, row) {
-                //
-            },
-            selsChange: function (sels) {
-                this.sels = sels;
-            },
-            //操作分页
-            handleSizeChange(val) {
-                this.listQuery.pageSize = val;
-                this.getMaintains();
-            },
-            handleCurrentChange(val) {
-                this.listQuery.curPage = val;
-                this.getMaintains();
-            },
-            //批量删除
-            batchRemove: function () {
-                var ids = this.sels.map(item => item.strMaintainId).toString();
-                this.$confirm('确认删除选中记录吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.listLoading = true;
-                    //NProgress.start();
-                    let para = {ids: ids};
-                    batchRemoveMaintain(para).then((res) => {
-                        this.listLoading = false;
-                        //NProgress.done();
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        this.getMaintains();
-                    });
-                }).catch(() => {
-
-                });
             }
         },
         mounted() {
-            // var loginUser =
-            //     {
-            //         avatar: 'https://avatars1.githubusercontent.com/u/16631463?v=4&s=460',
-            //         name: 'admin'
-            //     };
-            // sessionStorage.setItem('user', JSON.stringify(loginUser));
             var user = sessionStorage.getItem('user');
             if (user) {
                 user = JSON.parse(user);
 				this.sysUserName = user.username || '';
 				if(user.identity==1){
+				this.identity=1;
 				this.sysUserAvatar = "管理员";}
 				if(user.identity==2){
 				this.sysUserAvatar = "老师";}
 				if(user.identity==3){
-                this.sysUserAvatar = "同学";}
+				this.sysUserAvatar = "同学";}
             }
-            var _this = this;
-
-            // window.setInterval(function () {
-                _this.getMaintains();
-            //     setTimeout(() => {
-            //         if (!_this.dialogVisible) {
-            //             _this.dialogVisible = true;
-            //         } else {
-            //             _this.dialogVisible = false;
-            //         }
-            //     }, 9000);
-            // }, 5000);
-
         }
     }
 

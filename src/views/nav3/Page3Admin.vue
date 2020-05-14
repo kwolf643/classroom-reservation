@@ -71,7 +71,7 @@
 <script>
     import util from '../../common/js/util'
     //import NProgress from 'nprogress'
-    import { getFeedbackListPage, changeFeedback,deleteFeedback } from '../../api/api';
+    import { getFeedbackListPage, changeFeedback,deleteFeedbackAdmin } from '../../api/api';
 
     export default {
         data() {
@@ -212,7 +212,7 @@
                     //NProgress.start();
                     let para = {feedbackId: row.feedbackId};
                     console.log(para);
-                    deleteFeedback(para).then((res) => {
+                    deleteFeedbackAdmin(para).then((res) => {
                         this.listLoading = false;
                         //NProgress.done();
                         if (res.data.code !== 200) {
