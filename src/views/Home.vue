@@ -149,6 +149,7 @@
 				if(user.identity==1){
 				this.identity=1;
 				this.sysUserAvatar = "管理员";}
+				else this.identity=2;
 				if(user.identity==2){
 				this.sysUserAvatar = "老师";}
 				if(user.identity==3){

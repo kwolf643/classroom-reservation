@@ -54,7 +54,8 @@ let routes = [
         name: '反馈',
         iconCls: 'fa fa-pencil-square-o',
         leaf: true,//只有一个节点
-        hidden: false,
+        hidden: true,
+        identity:2,
         children: [
             {
                 path: '/Page3',

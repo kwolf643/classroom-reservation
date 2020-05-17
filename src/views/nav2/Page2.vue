@@ -364,7 +364,7 @@
                 this.editForm.rDate = date;
                 this.editForm.rTime1=row.rTime;
             },
-              //编辑
+              //重申
             editSubmit: function () {
                 this.$refs.editForm.validate((valid) => {
                     if (valid) {

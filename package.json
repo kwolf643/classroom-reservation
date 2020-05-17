@@ -1,8 +1,8 @@
 {
-  "name": "vue-admin",
+  "name": "classroom-reservation",
   "version": "1.0.5",
-  "description": "vue2 admin project",
-  "author": "alex <1029278668@qq.com>",
+  "description": "vue project",
+  "author": "kwolf<891577030@qq.com>",
   "license": "MIT",
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -10,7 +10,6 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@tinymce/tinymce-vue": "^3.0.1",
     "axios": "^0.15.3",
     "babylonjs": "^3.2.0-beta.3",
     "echarts": "^3.3.2",

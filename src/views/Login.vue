@@ -10,7 +10,7 @@
       <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
-    <a href='/forget' style="margin-left:180px">忘记密码?</a>
+    <a  v-on:click="forget" style="color:red;margin-left:180px;text-decoration:underline">忘记密码?</a>
     <el-form-item style="width:100%;">
       <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button><br>
       <el-button type="primary" style="width:100%;margin-top:5px" @click.native.prevent="handleReset2">重置</el-button>
@@ -33,17 +33,22 @@
         rules2: {
           account: [
             { required: true, message: '请输入账号', trigger: 'blur' },
-            //{ validator: validaePass }
+            { type: 'string', min:12,max:12,pattern: '^[0-9]*$', message: '请输入12位账号', trigger: 'blur' }
           ],
           checkPass: [
             { required: true, message: '请输入密码', trigger: 'blur' },
-            //{ validator: validaePass2 }
+            { min:4,max:16, message: '请输入4-16位密码', trigger: 'blur' }
           ]
         },
         checked: true
       };
     },
     methods: {
+      forget(){
+        this.$confirm('请联系教务处老师 电话：****', '提示', {
+                    type: 'warning'
+                });
+      },
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
